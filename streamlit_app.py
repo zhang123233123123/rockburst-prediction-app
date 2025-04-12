@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 
 # 设置页面
@@ -208,18 +209,25 @@ with col1:
             
             # 显示概率详情
             st.markdown("### 各等级概率")
-            probs_df = pd.DataFrame({
-                "岩爆等级": ["无岩爆倾向", "弱岩爆倾向", "中等岩爆倾向", "强岩爆倾向"],
-                "概率": [
-                    probabilities.get("Class 0", 0),
-                    probabilities.get("Class 1", 0),
-                    probabilities.get("Class 2", 0),
-                    probabilities.get("Class 3", 0)
-                ]
-            })
             
-            # 使用条形图显示概率
-            st.bar_chart(probs_df.set_index("岩爆等级"))
+            # 创建Matplotlib图表
+            fig, ax = plt.figure(figsize=(8, 5)), plt.axes()
+            
+            labels = ["无岩爆倾向", "弱岩爆倾向", "中等岩爆倾向", "强岩爆倾向"]
+            values = [
+                probabilities.get("Class 0", 0),
+                probabilities.get("Class 1", 0),
+                probabilities.get("Class 2", 0),
+                probabilities.get("Class 3", 0)
+            ]
+            
+            bar_colors = ["#4CAF50", "#FFC107", "#FF9800", "#F44336"]
+            
+            ax.bar(labels, values, color=bar_colors)
+            ax.set_ylabel('概率')
+            ax.set_title('岩爆等级概率分布')
+            
+            st.pyplot(fig)
             
             st.markdown('</div>', unsafe_allow_html=True)
             
